@@ -1,0 +1,11 @@
+server:
+  port: 8080 # Port mặc định
+
+spring:
+  # Kích hoạt profile "local" làm mặc định
+  # (Sẽ tự động nạp file "application-local.yml")
+  profiles:
+    active: local
+
+# (Bạn có thể đặt các cấu hình chung cho cả 2 môi trường ở đây)
+# Ví dụ: JPA, Actuator, JWT (nếu không dùng biến môi trường)

@@ -1,0 +1,16 @@
+spring:
+  # 2. Database (PostgreSQL)
+  datasource:
+    # 👈 Trỏ tới tên service 'postgres'
+    url: jdbc:postgresql://postgres:5432/coffee_hr_db
+    # (Username/Password sẽ được tiêm từ docker-compose)
+
+  # 5. RabbitMQ
+  rabbitmq:
+    host: rabbitmq # 👈 Trỏ tới tên service 'rabbitmq'
+    # (Username/Password sẽ được tiêm từ docker-compose)
+
+# 6. JWT Configuration
+jwt:
+  # 👈 Lấy từ biến môi trường (do docker-compose tiêm vào)
+  signerKey: ${JWT_SIGNER_KEY}

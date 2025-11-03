@@ -1,0 +1,14 @@
+spring:
+  # 2. Database (PostgreSQL)
+  datasource:
+    # 👈 Trỏ tới tên service của Docker
+    url: jdbc:postgresql://postgres:5432/coffee_auth_db
+    # (Username/Password sẽ được tiêm từ docker-compose)
+
+  # 4. Redis
+  # 5. RabbitMQ
+  rabbitmq:
+    host: rabbitmq # 👈 Trỏ tới tên service
+  data:
+    redis:
+      host: redis

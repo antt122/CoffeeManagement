@@ -51,4 +51,7 @@ public class Staff {
      */
     @Column(precision = 19, scale = 2) // Ví dụ: 19 chữ số, 2 số sau dấu phẩy
     private BigDecimal salary;
+
+    @Builder.Default
+    private Boolean probationNotified = false;
 }

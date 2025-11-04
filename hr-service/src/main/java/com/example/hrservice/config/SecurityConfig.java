@@ -31,8 +31,10 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
-            "/api/deposits/success",
-            "/api/deposits/cancel"
+            "/api/hr/public/apply**"
+    };
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/hr/public/apply**"
     };
 
     private static final String[] WEBSOCKET_ENDPOINTS = {
@@ -58,6 +60,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.GET, SWAGGER_ENDPOINTS)
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINTS )
                         .permitAll()
                         .requestMatchers(WEBSOCKET_ENDPOINTS).permitAll()
                         .anyRequest()

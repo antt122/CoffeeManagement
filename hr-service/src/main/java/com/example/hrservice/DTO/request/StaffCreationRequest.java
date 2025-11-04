@@ -1,10 +1,16 @@
 package com.example.hrservice.DTO.request;
 
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffCreationRequest {
     // --- Thông tin Hồ sơ (Staff) ---
     private String firstname;

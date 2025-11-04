@@ -133,6 +133,10 @@ services:
       condition: service_healthy
      rabbitmq:
       condition: service_healthy
+    volumes:
+      # Ánh xạ thư mục "hr-uploads" bên ngoài máy thật
+      # vào thư mục "/app/uploads" bên trong container
+      - ./hr-uploads:/app/uploads
     networks:
       - coffee-network
     healthcheck:

@@ -17,9 +17,19 @@ public class RabbitMQConfig {
     public static final String QUEUE_NAME = "auth-account-creation-queue";
     public static final String ROUTING_KEY = "staff.created";
 
+    public static final String NOTIFICATION_EXCHANGE = "notification-exchange";
+    public static final String PROBATION_ROUTING_KEY = "probation.review.due";
+
+    public static final String ROLE_UPDATE_ROUTING_KEY = "account.role.update";
+
     @Bean
     public DirectExchange exchange() {
         return new DirectExchange(EXCHANGE_NAME);
+    }
+
+    @Bean
+    public DirectExchange notificationExchange() {
+        return new DirectExchange(NOTIFICATION_EXCHANGE);
     }
 
     // Bean này không bắt buộc ở service gửi, nhưng tốt để có

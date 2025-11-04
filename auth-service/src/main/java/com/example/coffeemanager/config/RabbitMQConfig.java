@@ -17,6 +17,11 @@ public class RabbitMQConfig {
     public static final String QUEUE_NAME = "auth-account-creation-queue";
     public static final String ROUTING_KEY = "staff.created";
 
+    public static final String QUEUE_NAME_UPDATE = "auth-account-update-queue";
+    public static final String ROUTING_KEY_UPDATE = "account.role.update";
+
+
+
     @Bean
     public DirectExchange exchange() {
         return new DirectExchange(EXCHANGE_NAME);
@@ -26,6 +31,17 @@ public class RabbitMQConfig {
     public Queue queue() {
         // durable = true (để hàng đợi không bị mất khi RabbitMQ restart)
         return new Queue(QUEUE_NAME, true);
+    }
+    // Bean cho Queue CẬP NHẬT
+    @Bean
+    public Queue updateQueue() {
+        return new Queue(QUEUE_NAME_UPDATE, true);
+    }
+
+    // Binding cho CẬP NHẬT
+    @Bean
+    public Binding updateBinding(Queue updateQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(updateQueue).to(exchange).with(ROUTING_KEY_UPDATE);
     }
 
     @Bean

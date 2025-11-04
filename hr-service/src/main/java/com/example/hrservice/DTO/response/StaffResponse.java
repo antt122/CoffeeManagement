@@ -1,12 +1,16 @@
 package com.example.hrservice.DTO.response;
 import com.example.hrservice.enums.Status;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffResponse {
     private String staffId;
     private String firstname;

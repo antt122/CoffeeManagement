@@ -13,4 +13,5 @@ public interface AccountRepository extends JpaRepository<Account, String> {
      * Tìm kiếm một tài khoản bằng username (tên đăng nhập).
      */
     Optional<Account> findByUsername(String username);
+    Optional<Account> findByStaffId(String staffId);
 }

@@ -13,10 +13,20 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffResponse {
     private String staffId;
-    private String firstname;
-    private String lastname;
     private String shopId;
     private Status status;
     private BigDecimal salary;
     private LocalDate hireDate;
+    private String jobTitle;
+
+    // --- Thông tin Cá nhân (Đã cập nhật) ---
+    private String firstname;
+    private String lastname;
+
+    // 👇 THÊM CÁC TRƯỜNG BỊ THIẾU VÀO ĐÂY
+    private LocalDate dob;
+    private String gender;
+    private String hometown;
+    private String avatar;
+    private String bio;
 }

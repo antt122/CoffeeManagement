@@ -9,6 +9,10 @@ spring:
   rabbitmq:
     host: rabbitmq # 👈 Trỏ tới tên service 'rabbitmq'
     # (Username/Password sẽ được tiêm từ docker-compose)
+services:
+  auth:
+      # 👈 Tên container và port của auth-service
+    url: http://coffee-auth-service:8080
 
 # 6. JWT Configuration
 jwt:

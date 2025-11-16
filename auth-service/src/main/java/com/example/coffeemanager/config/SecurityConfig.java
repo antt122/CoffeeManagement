@@ -29,7 +29,8 @@ public class SecurityConfig {
             "/auth/logout",
             "/auth/refresh",
             "/auth/register", // 👈 Thêm vào phòng khi bạn cần API đăng ký
-            "/api/deposits/payos-webhook" // Giữ lại theo code cũ
+            "/api/deposits/payos-webhook", // Giữ lại theo code cũ
+            "/api/auth/internal/**"
     };
 
     // ... (Phần còn lại của file giữ nguyên y hệt)

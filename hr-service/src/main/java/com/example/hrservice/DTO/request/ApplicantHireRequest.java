@@ -12,12 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicantHireRequest {
-
-    // --- Thông tin Tài khoản (Bắt buộc) ---
-    private String username;
-    private String password;
-    private String role; // (ví dụ: "ROLE_STAFF")
-
     // --- Thông tin Công việc (Bắt buộc) ---
     private String shopId;
     private BigDecimal salary;

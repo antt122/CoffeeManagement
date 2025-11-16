@@ -11,6 +11,9 @@ spring:
     host: localhost
     username: guest
     password: guest
+services:
+  auth:
+    url: http://localhost:8080
 
 # ------------------------------------
 # 6. JWT Configuration (Cho Local)

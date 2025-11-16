@@ -22,6 +22,9 @@ public class RabbitMQConfig {
 
     public static final String ROLE_UPDATE_ROUTING_KEY = "account.role.update";
 
+    // 👇 THÊM KEY MỚI CHO VIỆC KHÓA TÀI KHOẢN
+    public static final String ACCOUNT_DISABLE_ROUTING_KEY = "account.disable";
+
     @Bean
     public DirectExchange exchange() {
         return new DirectExchange(EXCHANGE_NAME);

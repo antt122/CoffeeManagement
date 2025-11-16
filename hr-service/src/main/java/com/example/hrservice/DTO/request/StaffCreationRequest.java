@@ -20,9 +20,6 @@ public class StaffCreationRequest {
     private String shopId;
     private LocalDate hireDate;
     private BigDecimal salary;
-
-    // --- Thông tin Tài khoản (Account) ---
-    private String username;
-    private String password;
+    private String jobTitle;
     private String role; // Ví dụ: "ROLE_STAFF" hoặc "ROLE_MANAGER"
 }

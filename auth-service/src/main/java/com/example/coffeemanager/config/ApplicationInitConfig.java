@@ -40,6 +40,7 @@ public class ApplicationInitConfig {
             log.info("Checking and creating default roles...");
             Role staffRole = createRoleIfNotFound(roleRepository, "STAFF", "Nhân viên cơ bản");
             Role managerRole = createRoleIfNotFound(roleRepository, "MANAGER", "Quản lý cửa hàng");
+            Role baristaRole = createRoleIfNotFound(roleRepository, "BARISTA", "Quản trị hệ thống");
             Role adminRole = createRoleIfNotFound(roleRepository, "ADMIN", "Quản trị hệ thống");
 
             // --- 2. Tạo tài khoản Admin mặc định nếu chưa có ---

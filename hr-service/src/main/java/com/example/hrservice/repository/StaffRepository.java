@@ -16,4 +16,5 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
             Status status,
             LocalDate ninetyDaysAgo
     );
+    List<Staff> findByStatus(Status status);
 }

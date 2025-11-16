@@ -20,7 +20,6 @@ import java.time.LocalDate;
 public class Staff {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "staffId")
     private String id;
 
@@ -30,6 +29,7 @@ public class Staff {
     LocalDate dob;
     String gender;
     String hometown;
+    String jobTitle;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)

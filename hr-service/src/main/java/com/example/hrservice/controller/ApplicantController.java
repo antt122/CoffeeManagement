@@ -11,6 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/hr/public") // 👈 Endpoint công khai
 @RequiredArgsConstructor
@@ -48,5 +52,16 @@ public class ApplicantController {
                     .result(response)
                     .build();
         }
+
+//    @GetMapping("/positions")
+//    public ApiResponse<List<String>> getPositions() {
+//        List<String> positions = Arrays.stream(Position.values())
+//                .map(Enum::name) // Trả về "BARISTA", "CASHIER"...
+//                .collect(Collectors.toList());
+//
+//        return ApiResponse.<List<String>>builder()
+//                .result(positions)
+//                .build();
+//    }
     }
 

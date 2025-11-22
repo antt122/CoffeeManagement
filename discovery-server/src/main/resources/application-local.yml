@@ -1,0 +1,10 @@
+# Cấu hình khi chạy local (IntelliJ)
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    # 👇 TẮT 2 DÒNG NÀY ĐỂ SỬA LỖI
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

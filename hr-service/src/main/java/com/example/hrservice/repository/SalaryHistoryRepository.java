@@ -1,0 +1,11 @@
+package com.example.hrservice.repository;
+
+import com.example.hrservice.entity.SalaryHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface SalaryHistoryRepository extends JpaRepository<SalaryHistory, String> {
+    List<SalaryHistory> findByStaffIdOrderByChangedAtDesc(String staffId);
+}

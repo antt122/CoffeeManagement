@@ -16,7 +16,9 @@ public enum ErrorCode {
     FILE_STORAGE_FAILED(2004, "Failed to store file", HttpStatus.INTERNAL_SERVER_ERROR),
     ROLE_NOT_FOUND(2005, "Role not found in Auth Service", HttpStatus.BAD_REQUEST),
     FILE_IS_REQUIRED(2006, "File (e.g., CV) is required", HttpStatus.BAD_REQUEST),
-    INVALID_TOKEN(1010, "Invalid or missing token claims", HttpStatus.UNAUTHORIZED);
+    INVALID_TOKEN(1010, "Invalid or missing token claims", HttpStatus.UNAUTHORIZED),
+    LEAVE_REQUEST_NOT_FOUND(2007, "Leave request not found", HttpStatus.NOT_FOUND),
+    INSUFFICIENT_LEAVE_BALANCE(2008, "Insufficient annual leave balance", HttpStatus.BAD_REQUEST);
 
     private int code;
     private String message;

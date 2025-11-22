@@ -6,6 +6,8 @@ spring:
   # (Sẽ tự động nạp file "application-local.yml")
   profiles:
     active: local
+  application:
+    name: hr-service
 
   # 3. JPA/Hibernate (Cấu hình chung)
   jpa:

@@ -1,5 +1,6 @@
 package com.example.hrservice.DTO.request;
 
+import com.example.hrservice.enums.EmployeeType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,4 +23,5 @@ public class StaffCreationRequest {
     private BigDecimal salary;
     private String jobTitle;
     private String role; // Ví dụ: "ROLE_STAFF" hoặc "ROLE_MANAGER"
+    private EmployeeType employeeType;
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/hr/applicants") // 👈 Đường dẫn nội bộ
 @RequiredArgsConstructor
-@SecurityRequirement(name = "api") // 👈 Yêu cầu Khóa (JWT) cho Swagger
+@SecurityRequirement(name = "api")
 public class ApplicantManagementController {
 
     private final ApplicantService applicantService;

@@ -2,10 +2,12 @@ package com.example.hrservice.controller;
 
 
 import com.example.hrservice.DTO.request.InternalAccountRequest;
+import com.example.hrservice.DTO.request.SalaryUpdateRequest;
 import com.example.hrservice.DTO.request.StaffCreationRequest;
 import com.example.hrservice.DTO.request.StaffPromotionRequest;
 import com.example.hrservice.DTO.response.ApiResponse;
 import com.example.hrservice.DTO.response.InternalAccountResponse;
+import com.example.hrservice.DTO.response.SalaryHistoryResponse;
 import com.example.hrservice.DTO.response.StaffResponse;
 import com.example.hrservice.enums.Status;
 import com.example.hrservice.service.StaffService;
@@ -92,5 +94,18 @@ public class StaffController {
         return ApiResponse.<List<StaffResponse>>builder()
                 .result(staffList)
                 .build();
+    }
+    @PutMapping("/{staffId}/salary")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    public ApiResponse<StaffResponse> updateSalary(
+            @PathVariable String staffId, @RequestBody SalaryUpdateRequest request) {
+        return ApiResponse.<StaffResponse>builder().result(staffService.updateSalary(staffId, request)).build();
+    }
+
+    @GetMapping("/{staffId}/salary-history")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    public ApiResponse<List<SalaryHistoryResponse>> getSalaryHistory(@PathVariable String staffId) {
+        // Bạn cần triển khai getSalaryHistory trong StaffService trước
+        return null; // (Placeholder)
     }
 }

@@ -38,10 +38,10 @@ public class ApplicationInitConfig {
         return args -> {
             // --- 1. Tạo các vai trò (Roles) nếu chúng chưa tồn tại ---
             log.info("Checking and creating default roles...");
-            Role staffRole = createRoleIfNotFound(roleRepository, "STAFF", "Nhân viên cơ bản");
-            Role managerRole = createRoleIfNotFound(roleRepository, "MANAGER", "Quản lý cửa hàng");
-            Role baristaRole = createRoleIfNotFound(roleRepository, "BARISTA", "Quản trị hệ thống");
-            Role adminRole = createRoleIfNotFound(roleRepository, "ADMIN", "Quản trị hệ thống");
+            Role staffRole = createRoleIfNotFound(roleRepository, "ROLE_STAFF", "Nhân viên cơ bản");
+            Role managerRole = createRoleIfNotFound(roleRepository, "ROLE_MANAGER", "Quản lý cửa hàng");
+            Role baristaRole = createRoleIfNotFound(roleRepository, "ROLE_BARISTA", "Quản trị hệ thống");
+            Role adminRole = createRoleIfNotFound(roleRepository, "ROLE_ADMIN", "Quản trị hệ thống");
 
             // --- 2. Tạo tài khoản Admin mặc định nếu chưa có ---
             if (accountRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {

@@ -1,5 +1,6 @@
 package com.example.hrservice.entity;
 
+import com.example.hrservice.enums.EmployeeType;
 import com.example.hrservice.enums.Status;
 
 import jakarta.persistence.*;
@@ -54,4 +55,11 @@ public class Staff {
 
     @Builder.Default
     private Boolean probationNotified = false;
+
+    @Enumerated(EnumType.STRING)
+    private EmployeeType employeeType; // Ví dụ: FULL_TIME
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "float default 0.0") // 👈 Giúp DB
+    private Double annualLeaveBalance = 0.0;
 }

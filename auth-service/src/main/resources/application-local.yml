@@ -60,3 +60,11 @@ management:
   endpoint:
     health:
       show-details: always
+
+eureka:
+  instance:
+    hostname: localhost # Đăng ký là "localhost"
+    prefer-ip-address: false # Dùng hostname thay vì IP (để localhost hoạt động tốt hơn trên Windows)
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

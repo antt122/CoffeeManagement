@@ -1,0 +1,18 @@
+server:
+  port: 8761 # 👈 BẮT BUỘC ĐẶT CỔNG 8761
+
+spring:
+  application:
+    name: discovery-server
+  profiles:
+    active: local # 👈 BẮT BUỘC KÍCH HOẠT LOCAL
+
+# Cần cho Health Check (để Docker chạy)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

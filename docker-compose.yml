@@ -1,40 +1,42 @@
 services:
-  # --- 1. CƠ SỞ HẠ TẦNG (Giữ lại từ file cũ) ---
+  # ==========================================
+  # TẦNG 1: HẠ TẦNG (INFRASTRUCTURE)
+  # Database, Message Broker, Cache
+  # ==========================================
 
-  # PostgreSQL Database
+  # 1. PostgreSQL (Cơ sở dữ liệu)
   postgres:
     image: postgres:15-alpine
-    container_name: coffee-postgres # 👈 Đổi tên
+    container_name: coffee-postgres
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${AUTH_DB_NAME} # 👈 Đặt DB mặc định
+      POSTGRES_DB: ${AUTH_DB_NAME}
       POSTGRES_MULTIPLE_DATABASES: ${AUTH_DB_NAME},${HR_DB_NAME},${ATTENDANCE_DB_NAME}
     ports:
       - "${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # 👇 Bạn cần giữ lại script này nếu dùng POSTGRES_MULTIPLE_DATABASES
       - ./scripts/docker/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh
     networks:
-      - coffee-network # 👈 Đổi tên network
+      - coffee-network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${AUTH_DB_NAME}" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # RabbitMQ Message Broker
+  # 2. RabbitMQ (Hàng đợi tin nhắn)
   rabbitmq:
     image: rabbitmq:3.12-management-alpine
-    container_name: coffee-rabbitmq # 👈 Đổi tên
+    container_name: coffee-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
     ports:
       - "${RABBITMQ_PORT}:5672"
-      - "15672:15672" # Management UI
+      - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -45,10 +47,10 @@ services:
       timeout: 10s
       retries: 5
 
-  # Redis Cache
+  # 3. Redis (Bộ nhớ đệm & Blacklist Token)
   redis:
     image: redis:7-alpine
-    container_name: coffee-redis # 👈 Đổi tên
+    container_name: coffee-redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -59,83 +61,124 @@ services:
     networks:
       - coffee-network
     healthcheck:
-      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ] # 👈 Sửa lại test
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 5
 
-  # pgAdmin (Quản lý DB)
+  # 4. pgAdmin (Giao diện quản lý DB - Optional)
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: coffee-pgadmin # 👈 Đổi tên
+    container_name: coffee-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${ADMIN_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - coffee-network
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
-  # --- 2. ỨNG DỤNG JAVA (Thay thế các service .NET) ---
+  # ==========================================
+  # TẦNG 2: TRUNG GIAN (MIDDLEWARE)
+  # Service Discovery
+  # ==========================================
 
-  # Auth Service (Java/Spring Boot)
+  # 5. Discovery Server (Eureka)
+  discovery-server:
+    build:
+      context: ./discovery-server
+      dockerfile: Dockerfile
+    container_name: coffee-discovery-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8761:8761"
+    networks:
+      - coffee-network
+    healthcheck:
+      # 👇 SỬA DÒNG NÀY: Dùng wget thay vì curl
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # TẦNG 3: DỊCH VỤ NGHIỆP VỤ (MICROSERVICES)
+  # Auth, HR
+  # ==========================================
+
+  # 6. Auth Service (Xác thực & Tài khoản)
   auth-service:
     build:
-      context: ./auth-service # 👈 Đường dẫn đến thư mục Auth Service của bạn
-      dockerfile: Dockerfile   # 👈 Tên Dockerfile (phải tự tạo)
+      context: ./auth-service
+      dockerfile: Dockerfile
     container_name: coffee-auth-service
     environment:
-      # 👇 Kết nối Postgres (dùng tên service "postgres")
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${AUTH_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      # 👇 Kết nối Redis (dùng tên service "redis")
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
       SPRING_REDIS_PASSWORD: ${REDIS_PASSWORD}
-      # (Thêm các biến khác, ví dụ: JWT secret)
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      JWT_SIGNER_KEY: ${JWT_SIGNER_KEY}
     ports:
-      - "8080:8080" # 👈 Giả sử Spring Boot chạy port 8080
+      - "8088:8080" # Đã đổi sang 8088 để tránh xung đột local
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
     networks:
       - coffee-network
     healthcheck:
-      # 💡 Cần thêm Spring Boot Actuator vào dự án
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s # 👈 Cho Java thời gian khởi động
+      start_period: 40s
 
-
+  # 7. HR Service (Nhân sự)
   hr-service:
     build:
-      context: ./hr-service # 👈 Đường dẫn đến thư mục HR Service
+      context: ./hr-service
       dockerfile: Dockerfile
     container_name: coffee-hr-service
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${HR_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      # ...
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      JWT_SIGNER_KEY: ${JWT_SIGNER_KEY}
+      SERVICES_AUTH_URL: http://coffee-auth-service:8080
     ports:
-      - "8081:8080" # 👈 Map ra port khác (8081)
+      - "8081:8080"
     depends_on:
-     postgres:
-      condition: service_healthy
-     rabbitmq:
-      condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
     volumes:
-      # Ánh xạ thư mục "hr-uploads" bên ngoài máy thật
-      # vào thư mục "/app/uploads" bên trong container
       - ./hr-uploads:/app/uploads
     networks:
       - coffee-network
@@ -146,9 +189,38 @@ services:
       retries: 3
       start_period: 40s
 
-# --- 3. ĐỊNH NGHĨA NETWORK & VOLUMES (Giữ lại) ---
+  # ==========================================
+  # TẦNG 4: CỔNG VÀO (GATEWAY)
+  # ==========================================
+
+  # 8. API Gateway
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    container_name: coffee-gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    ports:
+      - "8000:8000"
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    networks:
+      - coffee-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# ==========================================
+# NETWORK & VOLUMES
+# ==========================================
 networks:
-  coffee-network: # 👈 Đổi tên
+  coffee-network:
     driver: bridge
 
 volumes:

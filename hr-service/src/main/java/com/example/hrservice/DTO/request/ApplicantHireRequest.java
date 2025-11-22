@@ -1,5 +1,6 @@
 package com.example.hrservice.DTO.request;
 
+import com.example.hrservice.enums.EmployeeType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,6 +17,7 @@ public class ApplicantHireRequest {
     private String shopId;
     private BigDecimal salary;
     private LocalDate hireDate;
+    private EmployeeType employeeType;
 
     // --- Thông tin Cá nhân (Nếu form ứng tuyển chưa có) ---
     // (Manager có thể cần điền nốt nếu form ban đầu không yêu cầu)

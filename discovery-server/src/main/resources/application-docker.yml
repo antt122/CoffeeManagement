@@ -1,0 +1,9 @@
+# Cấu hình khi chạy trong Docker
+eureka:
+  instance:
+    hostname: discovery-server # Tên service trong Docker
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

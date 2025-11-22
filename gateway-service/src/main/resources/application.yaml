@@ -1,0 +1,47 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway-service
+  profiles:
+    active: local
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              lower-case-service-id: true
+              enabled: true
+          routes:
+            # 1. Luật cho Auth Service
+                    - id: auth-service-route
+                      uri: lb://auth-service
+                      predicates:
+                        - Path=/api/auth/**
+                      filters:
+                        # 👇 SỬA Ở ĐÂY: Thay đổi đích đến thành /auth/... (bỏ /api)
+                        # Input: /api/auth/login -> Segment: "login" -> Output: /auth/login
+                        - RewritePath=/api/auth/(?<segment>.*), /auth/$\{segment}
+
+                    # 2. Luật cho HR Service
+                    - id: hr-service-route
+                      uri: lb://hr-service
+                      predicates:
+                        - Path=/api/hr/**
+                      filters:
+                        # HR Service của bạn hình như đã dùng @RequestMapping("/api/hr/...")
+                        # Nên chúng ta giữ nguyên đường dẫn, không cần cắt /api
+                        # Input: /api/hr/staff -> Segment: "staff" -> Output: /api/hr/staff
+                        - RewritePath=/api/hr/(?<segment>.*), /api/hr/$\{segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

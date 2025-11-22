@@ -6,6 +6,45 @@ spring:
   # (Sẽ tự động nạp file "application-local.yml")
   profiles:
     active: local
+  application:
+    name: auth-service
+  # 2. Database (PostgreSQL)
+  datasource:
+    # Tên service 'postgres' và tên DB 'coffee_auth_db' từ docker-compose
+    url: jdbc:postgresql://localhost:5432/coffee_auth_db
+    username: admin_coffee
+    password: supersecretpassword
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
 
 # (Bạn có thể đặt các cấu hình chung cho cả 2 môi trường ở đây)
 # Ví dụ: JPA, Actuator, JWT (nếu không dùng biến môi trường)
+# ------------------------------------
+# 6. JWT Configuration (Cho AuthenticationService)
+# ------------------------------------
+jwt:
+  signerKey: "2c1d1f5a345c03c477c8b3b3acf683194d5485bc3578bca145bd3cdcf7a4cf182daae210e68e0e744396d60aa7c5ccf4672f1b71572b8d6d9f481c16f753d8a13a34e6e02dff08a7fa72adc44fdd7ac875ae31502bbb297bfb73e6fd971ba361770c196d4305385dd9409fe694076f6ea00d33547a6104a810d2ac613c542edd48bbdeaaaaee6f61eccc305e60c03f6ed67df1486b80166d7e99663b93aaeaab5a1246cdd41c523f126c233057eb13b4ac5330fb78bba4575f382aa5728a05a544b3544140b116dec3323405e258b71a1c3f2e28a9333901dfef38a328594ca6cb52ebc953d3e46330838ebd4a0d3fdf97c85071f18cb9dcb74de2f7b1e0f52578cb1feb8783077770d8d1bdda7139cf5f14aac6644e13db3a9905e212056ba2097cb078a5a8b46a7381d3fb8cb8e7f086e48ac99df22c489facce10ed0773a306607291420827515cc4b9e1ba4bf2c8b961fa886c79c98993f04d7fd60ec11a20ca4ee3c0cd896c68f53b3e533000d9dd024ba5653f50783eeab156b7212baf9ff4f869bb162292352f84b91d0c46218f470f6a43a1b3d7c55d67761431705dfb4e34bb250118e02d280c94c38aed41bf95a8a2ade5aa0df24cf468cccf473a6d2469ecfd37dfd948ec1aa1b5b0276780594c03f15a3e43bc0c6d78ed7a04aa70dc69b4521202fe5aa9b43820fc29d1c62e2de1435fe6ea4ce9cc73a90cd7b7"
+  valid-duration: 3600 # 1 giờ (giây)
+  refresh-duration: 604800 # 7 ngày (giây)
+
+# ------------------------------------
+# 7. Actuator (Health Check)
+# ------------------------------------
+# Cho phép health check mà docker-compose cần
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+

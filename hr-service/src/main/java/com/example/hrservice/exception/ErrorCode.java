@@ -18,7 +18,8 @@ public enum ErrorCode {
     FILE_IS_REQUIRED(2006, "File (e.g., CV) is required", HttpStatus.BAD_REQUEST),
     INVALID_TOKEN(1010, "Invalid or missing token claims", HttpStatus.UNAUTHORIZED),
     LEAVE_REQUEST_NOT_FOUND(2007, "Leave request not found", HttpStatus.NOT_FOUND),
-    INSUFFICIENT_LEAVE_BALANCE(2008, "Insufficient annual leave balance", HttpStatus.BAD_REQUEST);
+    INSUFFICIENT_LEAVE_BALANCE(2008, "Insufficient annual leave balance", HttpStatus.BAD_REQUEST),
+    PAYSLIP_EXISTED(2009, "Payslip for this period already exists", HttpStatus.BAD_REQUEST);
 
     private int code;
     private String message;
